@@ -1,0 +1,51 @@
+.div1 {
+    text-align: center;
+}
+
+h2 {
+    text-decoration: underline;
+    font-family: consolas;
+}
+
+label {
+    display: block;
+
+}
+
+.div2 {
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: aquamarine;
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+p {
+    background-color: blueviolet;
+    color: aquamarine;
+    font-weight: bold;
+    border-radius: 5px;
+    border: solid 2px grey;
+    text-align: center;
+}
+
+label {
+    display: block;
+}
+
+input[type=text] {
+    padding: 3px;
+    height: 10px;
+    width: 200px;
+}
+
+input[type=button] {
+    margin: 5px;
+    border: 1px solid brown;
+    background-color: bisque;
+    font-weight: bold;
+    border-radius: 2px;
+}
