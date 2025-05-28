@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Square Cube</title>
+    <style>
+        div>div {
+            margin: 10px;
+        }
+
+        button {
+            width: 100px;
+            background-color: orange;
+            height: 30px;
+            border: 2px solid darkred;
+            border-radius: 10px;
+            margin-left: 50px;
+            display: inline-block;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div>
+            <label for="inputNumber"> Input Number </label>
+            <input type="text" id="inputNumber">
+        </div>
+        <div>
+            <label id="outputLabel" for="inputNumber"> Output Number </label>
+            <input type="text" id="output">
+        </div>
+
+        <div>
+            <button onclick="findSquare()"> Find Square </button>
+            <button onclick="findCube()"> Find Cube </button>
+        </div>
+    </div>
+    <script>
+        function findSquare() {
+            let number = parseInt(document.getElementById("inputNumber").value)
+            let square = number * number
+            document.getElementById("output").value = square
+            document.getElementById("outputLabel").textContent = "Square Number";
+        }
+        function findCube() {
+            let number = parseInt(document.getElementById("inputNumber").value)
+            let cube = number * number * number
+            document.getElementById("output").value = cube
+            document.getElementById("outputLabel").textContent = "Cube Number";
+        }
+    </script>
+</body>
+
+</html>
