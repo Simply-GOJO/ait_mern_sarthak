@@ -104,5 +104,46 @@ OR, I want the list of employees who are working as developers.
 The reduce method is used to deduce/calculate some value using the elements/objects of the list.
 For example, to calsulate the sum of all salaries of the employees.
 Or to find the employee with highest salary.
+--------------------------------
+A template row for a table is below:
+newRow = `<tr> <td> ${name} </td> <td> ${price} </td> <td> ${quantity} </td> <td> ${amount} </td> </tr>`
 
+var rows = '' // To store all the rows
+
+rows = rows + newRow
+
+<table>
+	<tr>
+		<th> Name </th>
+		<th> Price </th>
+		<th> Quantity </th>
+		<th> Total Amount </th>
+		${rows}
+	</tr>
+</table>
+
+
+name = document.getElementById("productName").value
+price = pasrseFloat(document.getElementById("price").value)
+quantity = parseInt(document.getElementById("quantity").value)
+totalAmount = pasrseFloat(document.getElementById("totalAmount").value)
+
+product = {
+	name : name,
+	price : price,
+	quantity : quantity,
+	totalAmount : totalAmount,
+}
+-----------------------------------------------
+STEPS TO CRAETE BACKEND APP:
+
+create a new folder named "person"
+from the command prompt go inside the folder
+run command:
+$ npm init
+
+Now open the folder person in vs code
+Create a new file index.js  (This file should a sibling of package.json)
+
+$ npm i express
 
