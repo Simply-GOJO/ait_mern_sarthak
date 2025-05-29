@@ -1,14 +1,14 @@
-const backend = require('express')
-const mongoDriver = require('mongoose')
-const personController = require('.')
+const express = require('express')
+const mongoose = require('mongoose')
+const personController = require('./controller')
 const bodyParser = require('body-parser')
-const mongoURI = 'mongodb://127.0.0.1:27017/nithin_db';
+const mongoURI = 'mongodb://localhost:27017/nithin_db';
 
-const app = backend()
+const app = express()
 app.use(bodyParser.json())
 
 // Code to connect to the db with required settings
-mongoDriver.connect(mongoURI,
+mongoose.connect(mongoURI,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -28,5 +28,5 @@ app.delete('/persons/:id', personController.deletePersonById)
 const port = process.env.PORT || 3000
 
 app.listen(port, () => {
-    console.log('Server is running on port ', port)
+    console.log(`Server is running on port ${port}`)
 })

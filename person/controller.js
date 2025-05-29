@@ -1,6 +1,6 @@
 const Person = require('./model/Person')
 
-exports.createPerson = async(requestAnimationFrame, res) => {
+exports.createPerson = async (req, res) => {
     try {
         const person = new Person(req.body)
         const savedPerson = await person.save()
