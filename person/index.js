@@ -1,33 +1,32 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const app = express();
-const port = 3000;
-
+const backend = require('express')
+const mongoDriver = require('mongoose')
+const personController = require('.')
+const bodyParser = require('body-parser')
 const mongoURI = 'mongodb://127.0.0.1:27017/nithin_db';
 
-// Connect to MongoDB
-mongoose.connect(mongoURI)
-.then(() => {
-  console.log('Connected to MongoDB');
-})
-.catch((err) => {
-  console.error('Error connecting to MongoDB', err);
-});
+const app = backend()
+app.use(bodyParser.json())
 
-// Disconnect from MongoDB
-const disconnectFromMongoDB = async () => {
-  try {
-    await mongoose.disconnect();
-    console.log('Disconnected from MongoDB');
-  } catch (err) {
-    console.error('Error disconnecting from MongoDB', err);
-  }
-};
+// Code to connect to the db with required settings
+mongoDriver.connect(mongoURI,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }). then( () => console.log('DB connected successfully')).catch(err => console.err(err))
 
-disconnectFromMongoDB();
+// Routes
+app.post('/persons', personController.createPerson)
+
+app.get('/persons', personController.readAllPersons)
+
+app.get('/persons/:id', personController.readPersonById)
+
+app.put('/persons/:id', personController.updatePersonById)
+
+app.delete('/persons/:id', personController.deletePersonById)
+
+const port = process.env.PORT || 3000
 
 app.listen(port, () => {
-    console.log('Server is running on port 3000')
-  });
-
-//  console.log(`Server is running on http://localhost:${port}`);
+    console.log('Server is running on port ', port)
+})
