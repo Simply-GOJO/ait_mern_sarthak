@@ -268,3 +268,26 @@ app.listen(port, () => {
 
 //  console.log(`Server is running on http://localhost:${port}`);
 -----------------------------------------------
+Flight Model
+
+airline			airindia
+source			bengaluru
+destination		kolkate
+duration		2.5
+fare			5800
+capacity		180
+
+Steps:
+Create a folder "flight"
+From inside the folder open the command prompt
+$ npm list 		Check if the modules are available
+$ npm init -y	Create an empty backend project
+Note: Make sure in the package.json you have the dependencies json with the modules.
+If not avialable then run the command:
+$ npm install express mongoose cors
+
+Create the files like this:
+	flightController.js
+	server.js   	OR      index.js
+	models (folder)
+		flightModel.js
