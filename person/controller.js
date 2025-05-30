@@ -50,7 +50,8 @@ exports.updatePersonById = async(req, res) => {
 exports.deletePersonById = async(req, res) => {
     try {
         userId = req.params.id
-        const deletedPerson = await Person.findById(userId)
+        console.log(userId)
+        const deletedPerson = await Person.findByIdAndDelete(userId)
         if(!deletedPerson)
             return res.status(404).json({message:`Person with id ${id} not found`})
         res.json({message: `Person with id ${id} deleted`})
