@@ -1,0 +1,524 @@
+*******************************************************
+Define six "API Ends Points" (Routes) :
+
+Students API End Points 
+*******************************************************
+Base URL    http://localhost:8080
+
+GET         /                           <AppController::Instance>.serverRootAction
+...
+POST        /students                   <StudentController::Instance>.create
+GET         /students                   <StudentController::Instance>.readAll
+GET         /students/:id               <StudentController::Instance>.readById
+PUT         /students/:id               <StudentController::Instance>.readById
+DELETE      /students/:id               <StudentController::Instance>.readById
+======================================================
+                    ...
+
+*******************************************************
+map the "API End Point" with "controller action function"
+
+what is "API End Point"?
+    Http Request Method  + URL
+    ie Verb              + Noun
+
+request handler function    for "API End Point"  
+is aka 
+    route handler           for "API End Point"
+    controller action       for "API End Point"
+*******************************************************
+We do "map" the "end point" with the controller action function
+    The controller action function takes 'request', 'response' objects as arguments
+        'request' object: http request object
+            It holds 
+                - http request header
+                    - request content type  ie "application/json"
+                    - x-access-token for jwt authentication [optional]
+                - form params    (for Web Pages)
+                - request body (for REST Services)
+                - url path params
+                - url query string params
+        'response' object: http response object
+            It allows to send back 
+                - response header
+                    - for response content type  ie "application/json"
+                - response body 
+                - http response status 
+                and so on 
+======================================================
+                    ...
+
+*******************************************************
+"api end point's" "controller action function's" responsibilities
+
+ie API End Point's handler takes care
+*******************************************************
+- request handling
+    - request.body          raw (JSON) body from client (browserApp or nativeApp)
+    - request.params.<param_name>
+    - request.query.<param_name>
+    - request.<form_param_name>
+    ...
+- working with datasources 
+    - 'RDBMS' 
+        - 'mysql'
+        - 'postgress' 
+    - 'NoSql' 
+        - 'mongo db'             
+    ...            
+- reponse formation and sending response
+======================================================    
+                    ...
+
+
+
+*******************************************************
+'RDBMS' 
+*******************************************************
+- 'mysql'
+- 'postgress' 
+======================================================
+                    ...
+
+
+
+*******************************************************
+'NoSql' 
+*******************************************************
+- 'mongo db' 
+======================================================    
+In mongo, We do define the database
+- 'database'    = container of 'collections' 
+- 'collection'  = container of 'documents'
+
+Analogy of collection and document wrt RDBMS
+! 'tables' / 'relation' of RDBMS in mongodb is called 'documents' aka 'collection'
+! 'table record / row' OF RDBMS in mongodb is called 'document'
+    
+    ...
+!!! To work with 'mongo' in 'node', we use 'mangoose' package 
+    ...
+Steps to work with documents
+- connect to mongoose | connect to mongo db 
+- get model class | mongo collection object
+    - do model object creation | document creation in mongo collection 
+    - do model object updation | document updation in mongo collection
+    - do model object removal  | document removal from mongo collection 
+    - do model object(s) query | document(s) query of mongo collection 
+======================================================            
+                    ...
+
+
+
+
+
+*******************************************************
+Request handler method's request instance uses:
+*******************************************************
+//  path variable
+const id = request.params.id;       
+
+//  request body instance extraction
+const student = {...request.body};  
+======================================================
+
+
+
+
+
+*******************************************************
+Request handler method's response instance uses:
+*******************************************************
+// no explicit status code
+// default status code = 200
+response.send(rbody);                   
+
+
+response.status(rstatus).send(rbody);
+======================================================
+
+
+
+
+
+*******************************************************
+Route definitions:
+//import 'express' 
+const express = require("express");
+
+//Let 'app' be 'instance of express'
+const app = express();
+
+Let 'appController' be instance of 'AppController'
+Let 'studentController' be instance of 'StudentController'
+*******************************************************
+//NA  | (1) route for server root     | GET /
+app.get("/", appController.serverRootAction); 
+
+//C  | (1) student creation         | POST /students        
+app.post("/students", studentController.create);     
+
+//R   | (2) read all students        | GET /students
+app.get("/students", studentController.readAll);     
+
+//R   | (3) read a student by id    | GET /students/:id
+app.get("/students/:id", studentController.readById);       
+
+//U   | (4) update student          | PUT /students/:id
+app.put("/students/:id", studentController.update);
+
+//D   | (5) delete student          | DELETE /students/:id
+app.delete("/students/:id", studentController.remove);   
+======================================================
+
+
+
+
+
+*******************************************************
+Route definitions for group of routes:
+//import 'express' 
+const express = require("express");
+
+//Let 'app' be 'instance of express'
+const app = express();
+
+Let 'studentController' be instance of 'StudentController'
+*******************************************************
+const router = express.Route();
+
+//C  | (1) student creation         | POST /students        
+router.post("/", studentController.create);     
+
+//R   | (2) read all students        | GET /students
+router.get("/", studentController.readAll);     
+
+//R   | (3) read a student by id    | GET /students/:id
+router.get("/:id", studentController.readById);       
+
+//U   | (4) update student          | PUT /students/:id
+router.put("/:id", studentController.update);
+
+//D   | (5) delete student          | DELETE /students/:id
+router.delete("/:id", studentController.remove);   
+
+app.use("/students", router);
+======================================================
+                ....
+
+
+
+*******************************************************
+Mongo DB Level methods
+
+//import 'mongoose' 
+const mongoose = require("mongoose");
+
+//Let 'nithin_db' be the database name of the student application 
+const mongo_url = "mongodb://localhost:27017/nithin_db";
+*******************************************************
+/*
+#1.
+Make connection for mongoose database 
+    mongoose.connect() be the 'promise' method 
+        which returns the JS 'promise' instance
+
+So we have to attach 'thenFn' and 'catchFn' for 'promise'
+OR 
+use 'async' and 'await' combo to make 'promise' as 'calllable' method         
+*/
+mongoose.connect(mongo_url)
+    // !!! for OLDER versions 
+    // const mongoose_config = { useNewUrlParser : true, useUnifiedTopology : true };
+    // mongoose.connect(mongo_url, mongoose_config)  // DEPRECATED for nowadays version
+
+/*
+#2
+The function which is overriding 'toJSON' function of each 'document'
+*/
+const toJSON = function {
+    const { __v, _id, ...instance } = this.toObject();
+    instance.id = _id;
+    return instance;
+};
+
+/*
+#3
+The function which is overriding 'toJSON' function of each 'document'
+*/
+
+const collection_meta_extra = {
+    timestamps: false
+};
+
+const collection_meta = {
+    usn     : String,
+    name    : String,
+    sem     : Number,
+    branch  : String,
+    cgpa    : Number
+};
+//mongoose.Schema() defines 'Mongo db Collection' 
+const schema = mongoose.Schema(collection_meta, collection_meta_extra);
+schema.method("toJSON", toJSON);        
+//mongoose.model("student", schema) returns the 'Document' class ie 'Collection'
+const StudentModel = mongoose.model("student", schema);
+======================================================
+                ....
+
+
+
+*******************************************************
+Model class methods
+    They are 'promise' methods 
+*******************************************************
+StudentModel.create(student)
+
+StudentModel.find()
+
+StudentModel.findOne({ _id : id })    
+    StudentModel.findById(id)
+
+StudentModel.findOneAndUpdate({ _id : id }, student, {new: true}) 
+    StudentModel.findByIdAndUpdate(id, student, {new: true})
+
+StudentModel.findOneAndDelete({ _id : id }) 
+    StudentModel.findByIdAndDelete(id)    
+====================================================== 
+                ....
+
+
+
+*******************************************************
+### Defining mongodb connect method ###
+//import 'mongoose' 
+const mongoose = require("mongoose");
+
+//Let 'nithin_db' be the database name of the student application 
+const mongo_url = "mongodb://localhost:27017/nithin_db";
+*******************************************************
+//~~~ promise thenFn and catchFn ~~~
+mongoose.Promise = global.Promise;
+
+const thenFn = () => {
+    if(IS_DEBUG) { console.log("Connected to database");  }
+};
+
+const catchFn = error => {
+    if(IS_DEBUG) { console.log("Cannot connect to database", error); }
+    process.exit();
+};
+
+mongoose.connect(mongo_url)
+    .then(thenFn)
+    .catch(catchFn);
+======================================================
+//~~~ use of combo async and await ~~~
+/*
+    use 'async' over the function of the below code:
+*/
+mongoose.Promise = global.Promise;
+
+try {
+    await mongoose.connect(mongo_url);
+    if(IS_DEBUG) { console.log("Connected to database");  }
+}
+catch(error) {
+    if(IS_DEBUG) { console.log("Cannot connect to database", error); }
+    process.exit();
+}
+======================================================
+                ....
+
+
+*******************************************************
+### Defining mongodb create method ###
+
+Let StudentModel be "student" model(document) class
+
+//Let 'request' be the http request instance arg of API End Point handler function
+const student = {...request.body};  
+
+*******************************************************
+//~~~ promise thenFn and catchFn ~~~
+
+let rbody = { };
+
+const thenFn = (data) => {
+    rbody = data;
+    if(IS_DEBUG) { console.log("Created Student:", rbody.toObject()); }
+    //...
+};
+
+const catchFn = (error) => {
+    rbody = {message : `Error in creating student ${error}`};    
+
+    if(IS_DEBUG) { console.log(rbody); }
+    //...
+};
+
+StudentModel.create(student)
+    .then(thenFn)
+    .catch(catchFn);
+
+======================================================
+//~~~ use of combo async and await ~~~
+/*
+    use 'async' over the function of the below code:
+*/
+
+let rbody = { };
+
+try {
+    const data = await StudentModel.create(student);
+    rbody = data;
+    if(IS_DEBUG) { console.log("Created Student:", rbody.toObject()); }
+
+    //...
+}
+catch( error ) {
+    rbody = {message : `Error in creating student ${error}`};    
+
+    if(IS_DEBUG) { console.log(rbody); }
+    //...
+}
+======================================================
+                ....
+
+
+*******************************************************
+### Defining mongodb findOne method ###
+
+Let StudentModel be "student" model(document) class
+
+//Let 'request' be the http request instance arg of API End Point handler function
+const id = request.params.id;  
+
+*******************************************************
+//~~~ promise thenFn and catchFn ~~~
+let rbody = {};
+//...
+const thenFn = (data) => {
+    if(!data){
+        rbody = {"message" : "Student is not found"};
+
+        if(IS_DEBUG) { console.log(rbody); }
+
+        //...
+        return;
+    }
+
+    rbody = data;
+
+    if(IS_DEBUG) { console.log("Read Student:", data.toObject()); }
+
+    //...
+};
+const catchFn = (error) => {
+    rbody = {message : `Error in reading student.\n${error}`};
+
+    if(IS_DEBUG) { console.log(rbody); }
+
+    //...
+};
+
+StudentModel.findOne({ _id : id }) //findById(id)
+    .then(thenFn)
+    .catch(catchFn);
+======================================================
+//~~~ use of combo async and await ~~~
+/*
+    use 'async' over the function of the below code:
+*/
+let rbody = {};
+//...
+try {
+    const data = StudentModel.findOne({ _id : id }); //findById(id)
+
+    if(!data){
+        rbody = {"message" : "Student is not found"};
+
+        if(IS_DEBUG) { console.log(rbody); }
+
+        //...
+        return;
+    }
+
+    rbody = data;
+
+    if(IS_DEBUG) { console.log("Read Student:", data.toObject()); }
+
+    //...
+}
+catch( error ) { 
+    rbody = {message : `Error in reading student.\n${error}`};
+
+    if(IS_DEBUG) { console.log(rbody); }
+
+    //...
+}
+======================================================
+                ....
+
+
+*******************************************************
+### Defining mongodb find method ###
+
+Let StudentModel be "student" model(document) class
+
+//Let 'request' be the http request instance arg of API End Point handler function
+const student = {...request.body};  
+
+*******************************************************
+//~~~ promise thenFn and catchFn ~~~
+// YET TO DO
+======================================================
+//~~~ use of combo async and await ~~~
+/*
+    use 'async' over the function of the below code:
+*/
+// YET TO DO
+======================================================
+                ....
+
+
+*******************************************************
+### Defining mongodb update method ###
+
+Let StudentModel be "student" model(document) class
+
+//Let 'request' be the http request instance arg of API End Point handler function
+const student = {...request.body};  
+
+*******************************************************
+//~~~ promise thenFn and catchFn ~~~
+// YET TO DO
+======================================================
+//~~~ use of combo async and await ~~~
+/*
+    use 'async' over the function of the below code:
+*/
+// YET TO DO
+======================================================
+                ....
+
+
+*******************************************************
+### Defining mongodb delete method ###
+
+Let StudentModel be "student" model(document) class
+
+//Let 'request' be the http request instance arg of API End Point handler function
+const student = {...request.body};  
+
+*******************************************************
+//~~~ promise thenFn and catchFn ~~~
+// YET TO DO
+======================================================
+//~~~ use of combo async and await ~~~
+/*
+    use 'async' over the function of the below code:
+*/
+// YET TO DO
+======================================================
+                ....                
