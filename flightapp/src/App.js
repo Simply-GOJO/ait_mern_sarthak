@@ -1,10 +1,13 @@
-import logo from './logo.svg';
+import HelloWorld from './HelloWorld';
 import './App.css';
 
 function App() { // Functional component
   return (
     <div className="App">
-        <p> My Frist React App </p>
+      <p>
+       Parent App Content
+     </p>
+	  <HelloWorld/>
     </div>
   );
 }
